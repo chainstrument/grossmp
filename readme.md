@@ -5,7 +5,7 @@ Plateforme de gestion de commandes pour un grossiste : catalogue produits, tarif
 ## Stack
 
 - **Backend** : Symfony 7
-- **BDD** : PostgreSQL 16
+- **BDD** : SQLite (fichier local dans `var/`, un fichier par environnement — projet 100% local, pas de service dédié)
 - **Conteneurisation** : Docker / Docker Compose
 - **Queue** : Symfony Messenger (transport Doctrine ou Redis)
 - **Back-office** : Twig (admin/validateur, reporting, gestion catalogue)
@@ -30,10 +30,13 @@ Services démarrés par `docker compose` :
 |------------|------------------------------------|---------------------------------------------------------|
 | `php`      | PHP-FPM 8.3 (l'appli Symfony)      | interne uniquement                                      |
 | `nginx`    | Reverse proxy front                | port hôte dynamique — `docker compose port nginx 80`    |
-| `database` | PostgreSQL 16                      | port hôte dynamique — `docker compose port database 5432` |
 | `mailer`   | Mailpit (capture des emails, dev)  | UI web — `docker compose port mailer 8025`               |
 
-Les ports sont volontairement **non fixés** (`8080`, `5432`, `8025`...) pour éviter les conflits avec d'autres projets Docker qui tournent en parallèle sur la machine ; utilise `docker compose port <service> <port>` pour retrouver le port réellement assigné, ou `docker compose ps`.
+Pas de service BDD : Doctrine écrit directement dans un fichier SQLite sous `var/` (`var/data_dev.db`, `var/data_test.db`...), créé automatiquement à la première migration. Ce fichier n'est pas versionné (`var/` est dans `.gitignore`).
+
+Les ports HTTP/mail sont volontairement **non fixés** (`8080`, `8025`...) pour éviter les conflits avec d'autres projets Docker qui tournent en parallèle sur la machine ; utilise `docker compose port <service> <port>` pour retrouver le port réellement assigné, ou `docker compose ps`.
+
+Le conteneur `php` tourne avec ton UID/GID hôte (`1000:1000` par défaut) pour que les fichiers écrits sur `var/` (dont la BDD SQLite) t'appartiennent. Si ton utilisateur n'a pas l'UID 1000, exporte `DOCKER_UID`/`DOCKER_GID` (`export DOCKER_UID=$(id -u) DOCKER_GID=$(id -g)`) avant `docker compose up`.
 
 ### Commandes utiles
 
