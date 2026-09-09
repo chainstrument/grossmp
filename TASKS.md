@@ -18,12 +18,12 @@ Mettre en place l'environnement de dev avant toute feature métier.
 
 Gérer les sociétés clientes, leurs utilisateurs, et les rôles.
 
-- [ ] #8 Entity `Company` (société cliente) : nom, SIRET, adresse de facturation/livraison
-- [ ] #9 Entity `User` avec relation vers `Company`, rôles (`ROLE_BUYER`, `ROLE_VALIDATOR`, `ROLE_COMPANY_ADMIN`)
-- [ ] #10 Configurer `security.yaml` (firewall, provider, hashing des mots de passe)
-- [ ] #11 Formulaire + page de connexion (login classique)
-- [ ] #12 Commande CLI pour créer un premier utilisateur admin (`app:user:create`)
-- [ ] #13 Page "mon compte" (édition des infos utilisateur)
+- [x] #8 Entity `Company` (société cliente) : nom, SIRET, adresse de facturation/livraison (embeddable `Address`)
+- [x] #9 Entity `User` avec relation vers `Company`, rôles (`ROLE_BUYER`, `ROLE_VALIDATOR`, `ROLE_COMPANY_ADMIN`)
+- [x] #10 Configurer `security.yaml` (firewall, provider, hashing des mots de passe)
+- [x] #11 Formulaire + page de connexion (login classique)
+- [x] #12 Commande CLI pour créer un premier utilisateur admin (`app:user:create`)
+- [x] #13 Page "mon compte" (édition des infos utilisateur)
 
 ---
 

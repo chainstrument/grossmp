@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <h1>Mon compte</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Enregistrer</button>
+    {{ form_end(form) }}
+
+    <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
+{% endblock %}
