@@ -31,11 +31,13 @@ Gérer les sociétés clientes, leurs utilisateurs, et les rôles.
 
 Gérer les produits et les grilles tarifaires par client.
 
-- [ ] #14 Entity `Product` (référence, désignation, prix de base, stock)
-- [ ] #15 Entity `PriceTier` (tarif dégressif par quantité et/ou par `Company`)
-- [ ] #16 Repository custom : méthode pour calculer le prix effectif d'un produit pour un client donné
-- [ ] #17 Page catalogue (liste produits, recherche, filtre par catégorie)
-- [ ] #18 Fixtures de test (produits, tarifs) via `DataFixtures`
+- [x] #14 Entity `Product` (référence, désignation, prix de base, stock) — implémenté en DDD-lite dans `src/Catalog/` (bounded context isolé, voir note ci-dessous)
+- [x] #15 Entity `PriceTier` (tarif dégressif par quantité et/ou par `Company`)
+- [x] #16 Repository custom : méthode pour calculer le prix effectif d'un produit pour un client donné — `PriceCalculator` (service de domaine pur, testé sans Symfony/DB) + `ProductPriceResolver` (orchestration applicative)
+- [x] #17 Page catalogue (liste produits, recherche, filtre par catégorie) — `/catalogue`, back-office Twig, prévisualisation du prix par société
+- [x] #18 Fixtures de test (produits, tarifs) via `DataFixtures` — `CompanyFixtures` + `ProductFixtures`
+
+**Note archi** : ce module suit un style DDD/SOLID (Domain / Application / Infrastructure / UI dans `src/Catalog/`), avec value objects immuables (`Money`, `Sku`), une interface de repository injectée par inversion de dépendance (`ProductRepositoryInterface` → `DoctrineProductRepository`, bindée dans `config/services.yaml`), et un service de calcul de prix testable en isolation totale (`tests/Unit/Catalog/PriceCalculatorTest.php`). Company/User (EPIC 2) restent en style CRUD classique (`src/Entity`, `src/Controller`) — montée en complexité volontairement progressive.
 
 ---
 

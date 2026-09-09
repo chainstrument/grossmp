@@ -21,3 +21,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Catalog bounded context: explicit dependency-inversion bindings.
+    # The domain layer only depends on these interfaces; here is the one place
+    # that says which concrete (infrastructure) class actually implements them.
+    App\Catalog\Domain\Repository\ProductRepositoryInterface: '@App\Catalog\Infrastructure\Persistence\Doctrine\DoctrineProductRepository'
+    App\Catalog\Domain\Service\PriceCalculatorInterface: '@App\Catalog\Domain\Service\PriceCalculator'

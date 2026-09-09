@@ -18,6 +18,22 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            # Catalog is a self-contained bounded context (DDD-lite): its entities
+            # live under src/Catalog/Domain/Entity instead of src/Entity.
+            Catalog:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Catalog/Domain/Entity'
+                prefix: 'App\Catalog\Domain\Entity'
+                alias: Catalog
+            # Doctrine also needs to resolve embeddable value objects (e.g. Money)
+            # referenced from Catalog entities via #[ORM\Embedded].
+            CatalogValueObject:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Catalog/Domain/ValueObject'
+                prefix: 'App\Catalog\Domain\ValueObject'
+                alias: CatalogValueObject
         controller_resolver:
             auto_mapping: false
 

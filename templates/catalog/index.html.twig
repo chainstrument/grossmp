@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue{% endblock %}
+
+{% block body %}
+    <h1>Catalogue produits</h1>
+
+    <form method="get">
+        <input type="text" name="q" value="{{ searchTerm }}" placeholder="Recherche (nom, référence)">
+
+        <select name="category">
+            <option value="">Toutes catégories</option>
+            {% for category in categories %}
+                <option value="{{ category.value }}" {{ selectedCategory == category ? 'selected' : '' }}>{{ category.label }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="company">
+            <option value="">Tarif de base</option>
+            {% for company in companies %}
+                <option value="{{ company.id }}" {{ selectedCompany and selectedCompany.id == company.id ? 'selected' : '' }}>{{ company.name }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filtrer</button>
+    </form>
+
+    <p>{{ catalogPage.totalCount }} produit(s)</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Désignation</th>
+                <th>Catégorie</th>
+                <th>Stock</th>
+                <th>{{ selectedCompany ? 'Prix pour ' ~ selectedCompany.name : 'Prix de base' }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in catalogPage.items %}
+                <tr>
+                    <td>{{ product.reference }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category.label }}</td>
+                    <td>{{ product.stockQuantity }}</td>
+                    <td>{{ selectedCompany ? unitPrices[product.id] : product.basePrice }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun produit ne correspond à cette recherche.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        {% if catalogPage.hasPreviousPage %}
+            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page - 1})) }}">&laquo; Précédent</a>
+        {% endif %}
+        <span>Page {{ catalogPage.page }} / {{ catalogPage.totalPages }}</span>
+        {% if catalogPage.hasNextPage %}
+            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page + 1})) }}">Suivant &raquo;</a>
+        {% endif %}
+    </nav>
+{% endblock %}
