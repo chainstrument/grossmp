@@ -3,16 +3,32 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block body %}
-    <h1>Mon compte</h1>
+    <div class="mx-auto max-w-sm">
+        <h1 class="mb-6 text-2xl font-semibold text-gray-900">Mon compte</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div data-testid="flash-success" class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Enregistrer</button>
-    {{ form_end(form) }}
+        {{ form_start(form, {attr: {class: 'space-y-4'}}) }}
+            <div>
+                {{ form_label(form.firstName, null, {label_attr: {class: 'mb-1 block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.firstName, {attr: {class: 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.lastName, null, {label_attr: {class: 'mb-1 block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.lastName, {attr: {class: 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.email, null, {label_attr: {class: 'mb-1 block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.email, {attr: {class: 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500'}}) }}
+            </div>
 
-    <p><a href="{{ path('app_logout') }}">Se déconnecter</a></p>
+            <button type="submit" class="w-full rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                Enregistrer
+            </button>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

@@ -3,64 +3,87 @@
 {% block title %}Catalogue{% endblock %}
 
 {% block body %}
-    <h1>Catalogue produits</h1>
+    <h1 class="mb-6 text-2xl font-semibold text-gray-900">Catalogue produits</h1>
 
-    <form method="get">
-        <input type="text" name="q" value="{{ searchTerm }}" placeholder="Recherche (nom, référence)">
+    <form method="get" class="mb-6 flex flex-wrap items-end gap-3">
+        <div class="flex-1 min-w-[200px]">
+            <label for="q" class="mb-1 block text-sm font-medium text-gray-700">Recherche</label>
+            <input type="text" name="q" id="q" value="{{ searchTerm }}" placeholder="Nom, référence…"
+                   class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500">
+        </div>
 
-        <select name="category">
-            <option value="">Toutes catégories</option>
-            {% for category in categories %}
-                <option value="{{ category.value }}" {{ selectedCategory == category ? 'selected' : '' }}>{{ category.label }}</option>
-            {% endfor %}
-        </select>
+        <div>
+            <label for="category" class="mb-1 block text-sm font-medium text-gray-700">Catégorie</label>
+            <select name="category" id="category"
+                    class="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500">
+                <option value="">Toutes catégories</option>
+                {% for category in categories %}
+                    <option value="{{ category.value }}" {{ selectedCategory == category ? 'selected' : '' }}>{{ category.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <select name="company">
-            <option value="">Tarif de base</option>
-            {% for company in companies %}
-                <option value="{{ company.id }}" {{ selectedCompany and selectedCompany.id == company.id ? 'selected' : '' }}>{{ company.name }}</option>
-            {% endfor %}
-        </select>
+        <div>
+            <label for="company" class="mb-1 block text-sm font-medium text-gray-700">Tarif pour</label>
+            <select name="company" id="company"
+                    class="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500">
+                <option value="">Prix de base</option>
+                {% for company in companies %}
+                    <option value="{{ company.id }}" {{ selectedCompany and selectedCompany.id == company.id ? 'selected' : '' }}>{{ company.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <button type="submit">Filtrer</button>
+        <button type="submit" class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+            Filtrer
+        </button>
     </form>
 
-    <p>{{ catalogPage.totalCount }} produit(s)</p>
+    <p class="mb-3 text-sm text-gray-500">{{ catalogPage.totalCount }} produit(s)</p>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Référence</th>
-                <th>Désignation</th>
-                <th>Catégorie</th>
-                <th>Stock</th>
-                <th>{{ selectedCompany ? 'Prix pour ' ~ selectedCompany.name : 'Prix de base' }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in catalogPage.items %}
+    <div class="overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
                 <tr>
-                    <td>{{ product.reference }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category.label }}</td>
-                    <td>{{ product.stockQuantity }}</td>
-                    <td>{{ selectedCompany ? unitPrices[product.id] : product.basePrice }}</td>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Référence</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Désignation</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Catégorie</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Stock</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">
+                        {{ selectedCompany ? 'Prix pour ' ~ selectedCompany.name : 'Prix de base' }}
+                    </th>
                 </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">Aucun produit ne correspond à cette recherche.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for product in catalogPage.items %}
+                    <tr class="{{ product.stockQuantity < 1 ? 'opacity-50' : '' }}">
+                        <td class="px-4 py-2 font-mono text-gray-700">{{ product.reference }}</td>
+                        <td class="px-4 py-2 text-gray-900">{{ product.name }}</td>
+                        <td class="px-4 py-2 text-gray-600">{{ product.category.label }}</td>
+                        <td class="px-4 py-2 text-right text-gray-600">
+                            {{ product.stockQuantity }}
+                            {% if product.stockQuantity < 1 %}<span class="text-red-600">(rupture)</span>{% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-right font-medium text-gray-900">
+                            {{ selectedCompany ? unitPrices[product.id] : product.basePrice }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Aucun produit ne correspond à cette recherche.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <nav>
+    <nav class="mt-4 flex items-center justify-center gap-4 text-sm">
         {% if catalogPage.hasPreviousPage %}
-            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page - 1})) }}">&laquo; Précédent</a>
+            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page - 1})) }}" class="text-gray-600 hover:text-gray-900">&laquo; Précédent</a>
         {% endif %}
-        <span>Page {{ catalogPage.page }} / {{ catalogPage.totalPages }}</span>
+        <span class="text-gray-500">Page {{ catalogPage.page }} / {{ catalogPage.totalPages }}</span>
         {% if catalogPage.hasNextPage %}
-            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page + 1})) }}">Suivant &raquo;</a>
+            <a href="{{ path('app_catalog_index', app.request.query.all|merge({page: catalogPage.page + 1})) }}" class="text-gray-600 hover:text-gray-900">Suivant &raquo;</a>
         {% endif %}
     </nav>
 {% endblock %}

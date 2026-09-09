@@ -8,7 +8,7 @@ Plateforme de gestion de commandes pour un grossiste : catalogue produits, tarif
 - **BDD** : SQLite (fichier local dans `var/`, un fichier par environnement — projet 100% local, pas de service dédié)
 - **Conteneurisation** : Docker / Docker Compose
 - **Queue** : Symfony Messenger (transport Doctrine ou Redis)
-- **Back-office** : Twig (admin/validateur, reporting, gestion catalogue)
+- **Back-office** : Twig (admin/validateur, reporting, gestion catalogue), stylé avec **Tailwind CSS** via [symfonycasts/tailwind-bundle](https://symfony.com/bundles/TailwindBundle/current/index.html) (binaire standalone, pas de Node côté back — Node reste cantonné à `front/`)
 - **Espace client** : React (dossier `front/`, même repo), consomme l'API en JSON
 - **API** : JSON (DTO + Serializer), authentification JWT (LexikJWTAuthenticationBundle)
 
@@ -22,6 +22,7 @@ cp .env.example .env
 docker compose up -d --build
 docker compose exec php composer install
 docker compose exec php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec php php bin/console tailwind:build
 ```
 
 Services démarrés par `docker compose` :
@@ -45,7 +46,10 @@ docker compose exec php php bin/console <commande>      # console Symfony
 docker compose exec php vendor/bin/simple-phpunit        # tests
 docker compose exec php vendor/bin/php-cs-fixer fix       # lint/format
 docker compose logs -f php                                # logs applicatifs
+docker compose exec php php bin/console tailwind:build --watch  # recompile le CSS à chaque changement
 ```
+
+Le CSS compilé (`var/tailwind/`, `public/assets/`) n'est **pas versionné** (généré) : après un `git clone` ou un changement de classes Tailwind dans les templates, il faut relancer `tailwind:build` (ou le laisser tourner en `--watch` pendant le dev) pour que le rendu soit à jour — ce n'est pas automatique à chaque requête.
 
 Les tâches détaillées (EPICs, backlog) ont été déplacées dans un fichier séparé `TASKS.md`. Voir [TASKS.md](TASKS.md).
 ## Architecture front

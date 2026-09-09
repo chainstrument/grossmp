@@ -72,6 +72,6 @@ class LoginTest extends WebTestCase
 
         self::assertResponseRedirects('/login');
         $client->followRedirect();
-        self::assertSelectorExists('.alert-danger');
+        self::assertSelectorExists('[data-testid="login-error"]');
     }
 }
