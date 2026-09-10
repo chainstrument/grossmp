@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier{% endblock %}
+
+{% block body %}
+    <h1 class="mb-6 text-2xl font-semibold text-gray-900">Panier</h1>
+
+    {% for message in app.flashes('success') %}
+        <div data-testid="flash-success" class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div data-testid="flash-error" class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ message }}</div>
+    {% endfor %}
+
+    <div class="mb-8 rounded-md border border-gray-200 bg-white p-4">
+        <h2 class="mb-3 text-sm font-semibold text-gray-700">Ajouter un produit</h2>
+        {{ form_start(form, {attr: {class: 'flex flex-wrap items-end gap-3'}}) }}
+            <div class="min-w-[260px]">
+                {{ form_label(form.product, null, {label_attr: {class: 'mb-1 block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.product, {attr: {class: 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500'}}) }}
+                {{ form_errors(form.product) }}
+            </div>
+            <div>
+                {{ form_label(form.quantity, null, {label_attr: {class: 'mb-1 block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.quantity, {attr: {class: 'w-24 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500'}}) }}
+                {{ form_errors(form.quantity) }}
+            </div>
+            <button type="submit" class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                Ajouter
+            </button>
+        {{ form_end(form) }}
+    </div>
+
+    <div class="overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Produit</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Quantité</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Prix unitaire</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Total ligne</th>
+                    <th class="px-4 py-2"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for line in cart.lines %}
+                    <tr data-testid="cart-line">
+                        <td class="px-4 py-2 text-gray-900">{{ line.product.name }}</td>
+                        <td class="px-4 py-2 text-right">
+                            <form method="post" action="{{ path('app_cart_line_update', {id: line.id}) }}" class="inline-flex items-center justify-end gap-2">
+                                <input type="number" name="quantity" value="{{ line.quantity }}" min="1" class="w-16 rounded-md border border-gray-300 px-2 py-1 text-right text-sm">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_line_update_' ~ line.id) }}">
+                                <button type="submit" class="text-gray-500 hover:text-gray-900" title="Mettre à jour">↻</button>
+                            </form>
+                        </td>
+                        <td class="px-4 py-2 text-right text-gray-600">{{ line.unitPrice }}</td>
+                        <td class="px-4 py-2 text-right font-medium text-gray-900">{{ line.lineTotal }}</td>
+                        <td class="px-4 py-2 text-right">
+                            <form method="post" action="{{ path('app_cart_line_remove', {id: line.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_line_remove_' ~ line.id) }}">
+                                <button type="submit" class="text-red-600 hover:text-red-800">Retirer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Le panier est vide.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            {% if not cart.empty %}
+                <tfoot>
+                    <tr class="border-t border-gray-200 bg-gray-50">
+                        <td colspan="3" class="px-4 py-2 text-right font-medium text-gray-700">Total</td>
+                        <td data-testid="cart-total" class="px-4 py-2 text-right font-semibold text-gray-900">{{ cart.total }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+
+    {% if not cart.empty %}
+        <div class="mt-4 text-right">
+            <a href="{{ path('app_cart_summary') }}" class="inline-block rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                Voir le récapitulatif
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

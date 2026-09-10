@@ -72,6 +72,13 @@ final class Money
         return new self($this->amountInCents * $quantity, $this->currency);
     }
 
+    public function plus(self $other): self
+    {
+        $this->assertSameCurrency($other);
+
+        return new self($this->amountInCents + $other->amountInCents, $this->currency);
+    }
+
     public function isGreaterThan(self $other): bool
     {
         $this->assertSameCurrency($other);

@@ -45,11 +45,11 @@ Gérer les produits et les grilles tarifaires par client.
 
 Le cœur du parcours acheteur.
 
-- [ ] #19 Entity `Order` + `OrderLine` (statut initial : `draft`)
-- [ ] #20 Service `CartManager` : ajout/suppression de lignes, recalcul du total
-- [ ] #21 `Form/Type` pour la validation de commande (quantités mini, contrôle de stock)
-- [ ] #22 `Validator` custom : contrainte "stock suffisant" sur une `OrderLine`
-- [ ] #23 Page panier + page récapitulatif avant validation
+- [x] #19 Entity `Order` + `OrderLine` (statut initial : `draft`) — bounded context `src/Ordering/` (DDD-lite, même style que le Catalogue). Pas d'entité "Cart" séparée : un panier *est* une `Order` en statut `draft`
+- [x] #20 Service `CartManager` : ajout/suppression de lignes, recalcul du total — application service, un flush par cas d'usage ; fusionne les quantités si le produit est déjà dans le panier et réévalue le palier tarifaire
+- [x] #21 `Form/Type` pour la validation de commande (quantités mini, contrôle de stock) — `AddToCartType` (choix produit via `EntityType`, quantité min 1)
+- [x] #22 `Validator` custom : contrainte "stock suffisant" sur une `OrderLine` — `SufficientStock`/`SufficientStockValidator`, testé isolément via `ConstraintValidatorTestCase`
+- [x] #23 Page panier + page récapitulatif avant validation — `/panier` (ajout/màj/retrait de lignes) et `/panier/recapitulatif` (bouton "Valider" désactivé, arrivera avec le workflow de l'EPIC 5)
 
 ---
 

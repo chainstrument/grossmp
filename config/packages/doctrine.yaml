@@ -34,6 +34,14 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Catalog/Domain/ValueObject'
                 prefix: 'App\Catalog\Domain\ValueObject'
                 alias: CatalogValueObject
+            # Ordering is another bounded context (cart/order); it reuses the
+            # Money embeddable already mapped above, no ValueObject dir of its own.
+            Ordering:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Ordering/Domain/Entity'
+                prefix: 'App\Ordering\Domain\Entity'
+                alias: Ordering
         controller_resolver:
             auto_mapping: false
 

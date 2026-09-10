@@ -11,7 +11,8 @@ namespace App\Catalog\Domain\ValueObject;
  */
 final class Sku
 {
-    private const PATTERN = '/^[A-Z0-9](?:[A-Z0-9-]{1,30}[A-Z0-9])?$/';
+    // 3 to 32 chars, starting and ending with a letter/digit (hyphens only allowed in the middle).
+    private const PATTERN = '/^[A-Z0-9][A-Z0-9-]{1,30}[A-Z0-9]$/';
 
     private readonly string $value;
 

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Récapitulatif de commande{% endblock %}
+
+{% block body %}
+    <h1 class="mb-2 text-2xl font-semibold text-gray-900">Récapitulatif de commande</h1>
+    <p class="mb-6 text-sm text-gray-500">{{ cart.company.name }}</p>
+
+    <div class="overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Référence</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Produit</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Quantité</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Prix unitaire</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Total ligne</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for line in cart.lines %}
+                    <tr>
+                        <td class="px-4 py-2 font-mono text-gray-700">{{ line.product.reference }}</td>
+                        <td class="px-4 py-2 text-gray-900">{{ line.product.name }}</td>
+                        <td class="px-4 py-2 text-right">{{ line.quantity }}</td>
+                        <td class="px-4 py-2 text-right text-gray-600">{{ line.unitPrice }}</td>
+                        <td class="px-4 py-2 text-right font-medium text-gray-900">{{ line.lineTotal }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Le panier est vide.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="border-t border-gray-200 bg-gray-50">
+                    <td colspan="4" class="px-4 py-2 text-right font-medium text-gray-700">Total</td>
+                    <td data-testid="cart-total" class="px-4 py-2 text-right font-semibold text-gray-900">{{ cart.total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="mt-4 flex items-center justify-between">
+        <a href="{{ path('app_cart_index') }}" class="text-sm text-gray-600 hover:text-gray-900">&laquo; Retour au panier</a>
+        <button type="button" disabled title="Arrive avec le workflow de commande (EPIC 5)"
+                class="cursor-not-allowed rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500">
+            Valider la commande
+        </button>
+    </div>
+{% endblock %}
