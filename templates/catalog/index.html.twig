@@ -52,6 +52,9 @@
                     <th class="px-4 py-2 text-right font-medium text-gray-600">
                         {{ selectedCompany ? 'Prix pour ' ~ selectedCompany.name : 'Prix de base' }}
                     </th>
+                    {% if app.user.company %}
+                        <th class="px-4 py-2"></th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -67,10 +70,27 @@
                         <td class="px-4 py-2 text-right font-medium text-gray-900">
                             {{ selectedCompany ? unitPrices[product.id] : product.basePrice }}
                         </td>
+                        {% if app.user.company %}
+                            <td class="px-4 py-2 text-right">
+                                {% if product.stockQuantity >= 1 %}
+                                    <form method="post" action="{{ path('app_cart_index') }}" class="inline-flex items-center justify-end gap-1">
+                                        <input type="hidden" name="add_to_cart[product]" value="{{ product.id }}">
+                                        <input type="number" name="add_to_cart[quantity]" value="1" min="1"
+                                               class="w-16 rounded-md border border-gray-300 px-2 py-1 text-right text-sm">
+                                        <input type="hidden" name="add_to_cart[_token]" value="{{ csrf_token('submit') }}">
+                                        <button type="submit" class="rounded-md bg-gray-900 px-3 py-1 text-sm font-medium text-white hover:bg-gray-700">
+                                            Ajouter
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-sm text-gray-400">—</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Aucun produit ne correspond à cette recherche.</td>
+                        <td colspan="{{ app.user.company ? 6 : 5 }}" class="px-4 py-6 text-center text-gray-500">Aucun produit ne correspond à cette recherche.</td>
                     </tr>
                 {% endfor %}
             </tbody>
