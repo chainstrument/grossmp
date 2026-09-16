@@ -19,5 +19,21 @@ interface OrderRepositoryInterface
      */
     public function findDraftForCompany(Company $company): ?Order;
 
+    /**
+     * A company's past orders ("mes commandes"), most recent first — drafts
+     * excluded, a draft is just the current cart, not an order yet.
+     *
+     * @return Order[]
+     */
+    public function findSubmittedForCompany(Company $company): array;
+
+    /**
+     * Every order needing staff attention (anything past draft), oldest
+     * first so the queue is processed in order.
+     *
+     * @return Order[]
+     */
+    public function findAllSubmitted(): array;
+
     public function add(Order $order): void;
 }

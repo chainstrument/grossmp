@@ -82,6 +82,25 @@ class Order
         return OrderStatus::DRAFT === $this->status;
     }
 
+    /**
+     * Bridges $status with the marking format the Symfony Workflow component
+     * works with internally. See config/packages/workflow.yaml
+     * ("marking_store: { type: method }") — for a state_machine, Symfony
+     * always uses "single state" marking and, seeing OrderStatus is a
+     * BackedEnum, calls these two with the enum itself (not an array).
+     * Workflow is the only intended caller; use the workflow service to
+     * change status, never setMarking() directly.
+     */
+    public function getMarking(): OrderStatus
+    {
+        return $this->status;
+    }
+
+    public function setMarking(OrderStatus $status): void
+    {
+        $this->status = $status;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;

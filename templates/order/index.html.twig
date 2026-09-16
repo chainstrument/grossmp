@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes{% endblock %}
+
+{% block body %}
+    <h1 class="mb-6 text-2xl font-semibold text-gray-900">Commandes</h1>
+
+    <div class="overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">N°</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Société</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Statut</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Créée le</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Total</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for order in orders %}
+                    <tr data-testid="order-row">
+                        <td class="px-4 py-2">
+                            <a href="{{ path('app_order_show', {id: order.id}) }}" class="text-gray-900 hover:underline">#{{ order.id }}</a>
+                        </td>
+                        <td class="px-4 py-2 text-gray-700">{{ order.company.name }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ order.status.label }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                        <td class="px-4 py-2 text-right font-medium text-gray-900">{{ order.total }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Aucune commande.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -56,7 +56,7 @@ class OrderTest extends TestCase
         $line = new OrderLine($this->aProduct('SKU-P1'), 1, Money::fromEuros(10));
         $order->addLine($line);
 
-        $this->forceStatus($order, OrderStatus::SUBMITTED);
+        $order->setMarking(OrderStatus::SUBMITTED);
 
         $this->expectException(CartNotEditableException::class);
         $order->addLine(new OrderLine($this->aProduct('SKU-P2'), 1, Money::fromEuros(5)));
@@ -76,15 +76,5 @@ class OrderTest extends TestCase
     private function aProduct(string $reference): Product
     {
         return new Product(new Sku($reference), 'Produit '.$reference, ProductCategory::FOOD, Money::fromEuros(1));
-    }
-
-    /**
-     * Status is private with no public transition method yet (that's EPIC 5's
-     * job) — reach in via reflection purely to set up this test's scenario.
-     */
-    private function forceStatus(Order $order, OrderStatus $status): void
-    {
-        $property = new \ReflectionProperty(Order::class, 'status');
-        $property->setValue($order, $status);
     }
 }

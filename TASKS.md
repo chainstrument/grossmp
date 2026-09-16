@@ -57,11 +57,11 @@ Le cœur du parcours acheteur.
 
 Gérer le cycle de vie d'une commande avec le composant `Workflow`.
 
-- [ ] #24 Définir la state machine dans `config/packages/workflow.yaml` (draft → submitted → validated → preparing → shipped → invoiced), + statut `cancelled`
-- [ ] #25 Implémenter les *guards* de transition (ex : impossible de passer à `preparing` si stock insuffisant)
-- [ ] #26 Contrôleur/actions pour déclencher les transitions (boutons "Valider", "Expédier"...)
-- [ ] #27 `EventSubscriber` sur les événements du Workflow (`workflow.order.transition.shipped` etc.)
-- [ ] #28 Page de suivi de commande affichant l'historique des transitions
+- [x] #24 Définir la state machine dans `config/packages/workflow.yaml` (draft → submitted → validated → preparing → shipped → invoiced), + statut `cancelled` — `type: state_machine`, marking store `method` (bridge `Order::getMarking()`/`setMarking()` avec l'enum `OrderStatus`)
+- [x] #25 Implémenter les *guards* de transition (ex : impossible de passer à `preparing` si stock insuffisant) — + guard "impossible de valider un panier vide" sur `submit`
+- [x] #26 Contrôleur/actions pour déclencher les transitions (boutons "Valider", "Expédier"...) — `POST /panier/valider` (submit) et `POST /commandes/{id}/transition/{name}` (staff : validate/prepare/ship/invoice, acheteur/staff : cancel). Autorisation volontairement grossière ici, formalisée en EPIC 6 (Voters)
+- [x] #27 `EventSubscriber` sur les événements du Workflow (`workflow.order.completed`, `workflow.order.guard.*`) — `OrderWorkflowSubscriber` : consomme le stock une seule fois à `prepare`, enregistre l'historique à chaque transition
+- [x] #28 Page de suivi de commande affichant l'historique des transitions — `/commandes` (liste) + `/commandes/{id}` (détail, historique, boutons d'action)
 
 ---
 

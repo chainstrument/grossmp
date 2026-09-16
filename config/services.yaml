@@ -30,3 +30,4 @@ services:
 
     # Ordering bounded context: same explicit binding pattern.
     App\Ordering\Domain\Repository\OrderRepositoryInterface: '@App\Ordering\Infrastructure\Persistence\Doctrine\DoctrineOrderRepository'
+    App\Ordering\Domain\Repository\OrderStatusHistoryRepositoryInterface: '@App\Ordering\Infrastructure\Persistence\Doctrine\DoctrineOrderStatusHistoryRepository'

@@ -36,6 +36,7 @@ security:
         - { path: ^/account, roles: ROLE_USER }
         - { path: ^/catalogue, roles: ROLE_USER }
         - { path: ^/panier, roles: ROLE_USER }
+        - { path: ^/commandes, roles: ROLE_USER }
 
 when@test:
     security:

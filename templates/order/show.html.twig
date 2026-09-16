@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande #{{ order.id }}{% endblock %}
+
+{% block body %}
+    {% set transitionLabels = {
+        submit: 'Envoyer',
+        validate: 'Valider',
+        prepare: 'Préparer',
+        ship: 'Expédier',
+        invoice: 'Facturer',
+        cancel: 'Annuler',
+    } %}
+
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-900">Commande #{{ order.id }}</h1>
+            <p class="text-sm text-gray-500">{{ order.company.name }} — créée le {{ order.createdAt|date('d/m/Y H:i') }}</p>
+        </div>
+        <span data-testid="order-status" class="rounded-full bg-gray-900 px-3 py-1 text-sm font-medium text-white">
+            {{ order.status.label }}
+        </span>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div data-testid="flash-success" class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div data-testid="flash-error" class="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ message }}</div>
+    {% endfor %}
+
+    <div class="mb-6 overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Référence</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Produit</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Quantité</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Prix unitaire</th>
+                    <th class="px-4 py-2 text-right font-medium text-gray-600">Total ligne</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for line in order.lines %}
+                    <tr>
+                        <td class="px-4 py-2 font-mono text-gray-700">{{ line.product.reference }}</td>
+                        <td class="px-4 py-2 text-gray-900">{{ line.product.name }}</td>
+                        <td class="px-4 py-2 text-right">{{ line.quantity }}</td>
+                        <td class="px-4 py-2 text-right text-gray-600">{{ line.unitPrice }}</td>
+                        <td class="px-4 py-2 text-right font-medium text-gray-900">{{ line.lineTotal }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="border-t border-gray-200 bg-gray-50">
+                    <td colspan="4" class="px-4 py-2 text-right font-medium text-gray-700">Total</td>
+                    <td class="px-4 py-2 text-right font-semibold text-gray-900">{{ order.total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    {% if enabledTransitions|length > 0 %}
+        <div class="mb-6 flex flex-wrap gap-2">
+            {% for transitionItem in enabledTransitions %}
+                <form method="post" action="{{ path('app_order_transition', {id: order.id, transition: transitionItem.name}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('order_transition_' ~ order.id) }}">
+                    <button type="submit"
+                            class="rounded-md px-4 py-2 text-sm font-medium text-white {{ transitionItem.name == 'cancel' ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-gray-700' }}">
+                        {{ transitionLabels[transitionItem.name] ?? transitionItem.name }}
+                    </button>
+                </form>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2 class="mb-3 text-sm font-semibold text-gray-700">Historique</h2>
+    <div class="overflow-x-auto rounded-md border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Date</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Transition</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">De</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Vers</th>
+                    <th class="px-4 py-2 text-left font-medium text-gray-600">Par</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for entry in history %}
+                    <tr data-testid="history-row">
+                        <td class="px-4 py-2 text-gray-500">{{ entry.performedAt|date('d/m/Y H:i') }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ transitionLabels[entry.transition] ?? entry.transition }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ entry.fromStatus.label }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ entry.toStatus.label }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ entry.performedBy ? entry.performedBy : 'Système' }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Aucune transition pour le moment.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -26,6 +26,12 @@
                     <a href="{{ path('app_catalog_index') }}" class="text-lg font-semibold text-gray-900">Grossmp</a>
                     <div class="flex items-center gap-4 text-sm">
                         <a href="{{ path('app_catalog_index') }}" class="text-gray-600 hover:text-gray-900">Catalogue</a>
+                        {% if app.user.company %}
+                            <a href="{{ path('app_cart_index') }}" class="text-gray-600 hover:text-gray-900">Panier</a>
+                        {% endif %}
+                        {% if app.user.company or is_granted('ROLE_VALIDATOR') %}
+                            <a href="{{ path('app_order_index') }}" class="text-gray-600 hover:text-gray-900">Commandes</a>
+                        {% endif %}
                         <a href="{{ path('app_account') }}" class="text-gray-600 hover:text-gray-900">Mon compte</a>
                         <a href="{{ path('app_logout') }}" class="text-gray-600 hover:text-gray-900">Déconnexion</a>
                     </div>

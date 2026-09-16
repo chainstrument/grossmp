@@ -38,6 +38,30 @@ class DoctrineOrderRepository extends ServiceEntityRepository implements OrderRe
         ;
     }
 
+    public function findSubmittedForCompany(Company $company): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.company = :company')
+            ->andWhere('o.status != :draft')
+            ->setParameter('company', $company)
+            ->setParameter('draft', OrderStatus::DRAFT)
+            ->orderBy('o.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findAllSubmitted(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.status != :draft')
+            ->setParameter('draft', OrderStatus::DRAFT)
+            ->orderBy('o.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function add(Order $order): void
     {
         $this->getEntityManager()->persist($order);

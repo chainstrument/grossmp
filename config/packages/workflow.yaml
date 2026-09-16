@@ -1,0 +1,39 @@
+framework:
+    workflows:
+        order:
+            type: state_machine
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: method
+                property: marking
+            supports:
+                - App\Ordering\Domain\Entity\Order
+            initial_marking: draft
+            places:
+                - draft
+                - submitted
+                - validated
+                - preparing
+                - shipped
+                - invoiced
+                - cancelled
+            transitions:
+                submit:
+                    from: draft
+                    to: submitted
+                validate:
+                    from: submitted
+                    to: validated
+                prepare:
+                    from: validated
+                    to: preparing
+                ship:
+                    from: preparing
+                    to: shipped
+                invoice:
+                    from: shipped
+                    to: invoiced
+                cancel:
+                    from: [draft, submitted, validated]
+                    to: cancelled

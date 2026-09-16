@@ -43,9 +43,18 @@
 
     <div class="mt-4 flex items-center justify-between">
         <a href="{{ path('app_cart_index') }}" class="text-sm text-gray-600 hover:text-gray-900">&laquo; Retour au panier</a>
-        <button type="button" disabled title="Arrive avec le workflow de commande (EPIC 5)"
-                class="cursor-not-allowed rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500">
-            Valider la commande
-        </button>
+        {% if canSubmit %}
+            <form method="post" action="{{ path('app_cart_submit') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('cart_submit') }}">
+                <button type="submit" class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                    Valider la commande
+                </button>
+            </form>
+        {% else %}
+            <button type="button" disabled title="Le panier est vide"
+                    class="cursor-not-allowed rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500">
+                Valider la commande
+            </button>
+        {% endif %}
     </div>
 {% endblock %}

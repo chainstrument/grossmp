@@ -6,6 +6,7 @@ use App\Catalog\Domain\Exception\ProductNotFoundException;
 use App\Entity\User;
 use App\Ordering\Application\AddToCartRequest;
 use App\Ordering\Application\CartManager;
+use App\Ordering\Application\OrderWorkflow;
 use App\Ordering\Domain\Exception\InsufficientStockException;
 use App\Ordering\UI\Form\AddToCartType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,12 +14,14 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Workflow\Exception\LogicException as WorkflowLogicException;
 
 #[Route('/panier')]
 class CartController extends AbstractController
 {
     public function __construct(
         private readonly CartManager $cartManager,
+        private readonly OrderWorkflow $orderWorkflow,
     ) {
     }
 
@@ -116,7 +119,35 @@ class CartController extends AbstractController
 
         return $this->render('cart/summary.html.twig', [
             'cart' => $cart,
+            'canSubmit' => $this->orderWorkflow->can($cart, 'submit'),
         ]);
+    }
+
+    #[Route('/valider', name: 'app_cart_submit', methods: ['POST'])]
+    public function submit(Request $request): Response
+    {
+        $user = $this->currentUserOrRedirect();
+        if ($user instanceof Response) {
+            return $user;
+        }
+
+        if (!$this->isCsrfTokenValid('cart_submit', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $cart = $this->cartManager->getOrCreateDraftCart($user->getCompany(), $user);
+
+        try {
+            $this->orderWorkflow->apply($cart, 'submit');
+        } catch (WorkflowLogicException $e) {
+            $this->addFlash('error', $e->getMessage());
+
+            return $this->redirectToRoute('app_cart_summary');
+        }
+
+        $this->addFlash('success', 'Commande envoyée.');
+
+        return $this->redirectToRoute('app_order_show', ['id' => $cart->getId()]);
     }
 
     private function currentUserOrRedirect(): User|Response
