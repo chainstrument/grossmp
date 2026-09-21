@@ -4,9 +4,9 @@ namespace App\Ordering\UI\Controller;
 
 use App\Entity\User;
 use App\Ordering\Application\OrderWorkflow;
-use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Domain\Repository\OrderRepositoryInterface;
 use App\Ordering\Domain\Repository\OrderStatusHistoryRepositoryInterface;
+use App\Ordering\Infrastructure\Security\OrderVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Workflow\Exception\LogicException as WorkflowLogicException;
 
 /**
- * Order tracking (#28) and staff transition actions (#26). Who's allowed to
- * trigger which transition is a coarse, inline check for now — EPIC 6
- * (Voters) is where this becomes a proper, independently testable
- * authorization layer; nothing here should be considered final.
+ * Order tracking (#28) and transition actions (#26). Authorization is
+ * delegated to App\Ordering\Infrastructure\Security\OrderVoter.
  */
 #[Route('/commandes')]
 class OrderController extends AbstractController
@@ -52,13 +50,13 @@ class OrderController extends AbstractController
     public function show(int $id): Response
     {
         $order = $this->orders->findById($id);
-        if (null === $order || $order->isDraft() || !$this->canView($order)) {
+        if (null === $order || $order->isDraft() || !$this->isGranted(OrderVoter::VIEW, $order)) {
             throw $this->createNotFoundException('Commande introuvable.');
         }
 
         $enabledTransitions = array_filter(
             $this->orderWorkflow->enabledTransitions($order),
-            fn ($transition) => $this->canTrigger($order, $transition->getName())
+            fn ($transition) => $this->isGranted(OrderVoter::attributeForTransition($transition->getName()) ?? '', $order)
         );
 
         return $this->render('order/show.html.twig', [
@@ -72,7 +70,7 @@ class OrderController extends AbstractController
     public function transition(int $id, string $transition, Request $request): Response
     {
         $order = $this->orders->findById($id);
-        if (null === $order || $order->isDraft() || !$this->canView($order)) {
+        if (null === $order || $order->isDraft() || !$this->isGranted(OrderVoter::VIEW, $order)) {
             throw $this->createNotFoundException('Commande introuvable.');
         }
 
@@ -80,9 +78,12 @@ class OrderController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        if (!$this->canTrigger($order, $transition)) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas effectuer cette action.');
+        $attribute = OrderVoter::attributeForTransition($transition);
+        if (null === $attribute) {
+            throw $this->createNotFoundException('Transition inconnue.');
         }
+
+        $this->denyAccessUnlessGranted($attribute, $order, 'Vous ne pouvez pas effectuer cette action.');
 
         try {
             $this->orderWorkflow->apply($order, $transition);
@@ -92,30 +93,5 @@ class OrderController extends AbstractController
         }
 
         return $this->redirectToRoute('app_order_show', ['id' => $order->getId()]);
-    }
-
-    private function canView(Order $order): bool
-    {
-        if ($this->isGranted(User::ROLE_VALIDATOR)) {
-            return true;
-        }
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        return null !== $user->getCompany() && $user->getCompany()->getId() === $order->getCompany()->getId();
-    }
-
-    /**
-     * Staff (ROLE_VALIDATOR) drive the fulfillment pipeline; the owning
-     * company can only cancel its own order.
-     */
-    private function canTrigger(Order $order, string $transition): bool
-    {
-        if ($this->isGranted(User::ROLE_VALIDATOR)) {
-            return true;
-        }
-
-        return 'cancel' === $transition && $this->canView($order);
     }
 }

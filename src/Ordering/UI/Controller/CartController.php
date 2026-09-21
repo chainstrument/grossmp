@@ -8,6 +8,7 @@ use App\Ordering\Application\AddToCartRequest;
 use App\Ordering\Application\CartManager;
 use App\Ordering\Application\OrderWorkflow;
 use App\Ordering\Domain\Exception\InsufficientStockException;
+use App\Ordering\Infrastructure\Security\OrderVoter;
 use App\Ordering\UI\Form\AddToCartType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -136,6 +137,7 @@ class CartController extends AbstractController
         }
 
         $cart = $this->cartManager->getOrCreateDraftCart($user->getCompany(), $user);
+        $this->denyAccessUnlessGranted(OrderVoter::attributeForTransition('submit'), $cart);
 
         try {
             $this->orderWorkflow->apply($cart, 'submit');
