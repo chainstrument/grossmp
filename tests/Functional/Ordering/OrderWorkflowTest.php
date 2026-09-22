@@ -6,8 +6,8 @@ use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\ValueObject\Money;
 use App\Catalog\Domain\ValueObject\Sku;
-use App\Entity\Company;
-use App\Entity\Embeddable\Address;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\ValueObject\Address;
 use App\Ordering\Application\CartManager;
 use App\Ordering\Application\OrderWorkflow;
 use App\Ordering\Domain\Enum\OrderStatus;
@@ -38,15 +38,15 @@ class OrderWorkflowTest extends KernelTestCase
         $this->history = $container->get(OrderStatusHistoryRepositoryInterface::class);
 
         // Same-file SQLite persists across runs — clean up leftovers first.
-        $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderStatusHistory h WHERE h.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Entity\Company c WHERE c.siret = :siret))')
+        $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderStatusHistory h WHERE h.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret))')
             ->setParameter('siret', self::TEST_SIRET)->execute();
         $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderLine l WHERE l.product IN (SELECT p FROM App\Catalog\Domain\Entity\Product p WHERE p.reference = :ref)')
             ->setParameter('ref', self::TEST_SKU)->execute();
-        $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Entity\Company c WHERE c.siret = :siret)')
+        $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret)')
             ->setParameter('siret', self::TEST_SIRET)->execute();
         $this->em->createQuery('DELETE FROM App\Catalog\Domain\Entity\Product p WHERE p.reference = :ref')
             ->setParameter('ref', self::TEST_SKU)->execute();
-        $this->em->createQuery('DELETE FROM App\Entity\Company c WHERE c.siret = :siret')
+        $this->em->createQuery('DELETE FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret')
             ->setParameter('siret', self::TEST_SIRET)->execute();
     }
 

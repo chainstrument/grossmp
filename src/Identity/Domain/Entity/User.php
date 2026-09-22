@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace App\Identity\Domain\Entity;
 
-use App\Repository\UserRepository;
+use App\Identity\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Entity(repositoryClass: DoctrineUserRepository::class)]
 #[ORM\Table(name: 'app_user')] // "user" is a reserved word on most SQL engines
 #[ORM\UniqueConstraint(name: 'UNIQ_USER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

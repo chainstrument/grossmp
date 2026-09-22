@@ -6,7 +6,7 @@ use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\ValueObject\Money;
 use App\Catalog\Domain\ValueObject\Sku;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Domain\Entity\OrderLine;
 use App\Ordering\Domain\Enum\OrderStatus;

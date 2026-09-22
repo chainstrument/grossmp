@@ -2,7 +2,7 @@
 
 namespace App\Ordering\Domain\Entity;
 
-use App\Entity\User;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Domain\Enum\OrderStatus;
 use Doctrine\ORM\Mapping as ORM;
 

@@ -2,7 +2,7 @@
 
 namespace App\Ordering\Infrastructure\Persistence\Doctrine;
 
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Domain\Enum\OrderStatus;
 use App\Ordering\Domain\Repository\OrderRepositoryInterface;

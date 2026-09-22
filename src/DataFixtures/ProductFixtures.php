@@ -7,7 +7,7 @@ use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\ValueObject\Money;
 use App\Catalog\Domain\ValueObject\Sku;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;

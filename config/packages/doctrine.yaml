@@ -12,12 +12,22 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            App:
+            # Identity is a self-contained bounded context (DDD-lite): its
+            # entities live under src/Identity/Domain/Entity instead of src/Entity.
+            Identity:
                 type: attribute
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+                dir: '%kernel.project_dir%/src/Identity/Domain/Entity'
+                prefix: 'App\Identity\Domain\Entity'
+                alias: Identity
+            # Doctrine also needs to resolve embeddable value objects (Address)
+            # referenced from Identity entities via #[ORM\Embedded].
+            IdentityValueObject:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Identity/Domain/ValueObject'
+                prefix: 'App\Identity\Domain\ValueObject'
+                alias: IdentityValueObject
             # Catalog is a self-contained bounded context (DDD-lite): its entities
             # live under src/Catalog/Domain/Entity instead of src/Entity.
             Catalog:

@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Company;
-use App\Entity\Embeddable\Address;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\ValueObject\Address;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

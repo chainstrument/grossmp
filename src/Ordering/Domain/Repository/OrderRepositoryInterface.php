@@ -2,7 +2,7 @@
 
 namespace App\Ordering\Domain\Repository;
 
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use App\Ordering\Domain\Entity\Order;
 
 /**

@@ -3,7 +3,7 @@
 namespace App\Ordering\UI\Controller;
 
 use App\Catalog\Domain\Exception\ProductNotFoundException;
-use App\Entity\User;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Application\AddToCartRequest;
 use App\Ordering\Application\CartManager;
 use App\Ordering\Application\OrderWorkflow;

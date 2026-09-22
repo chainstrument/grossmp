@@ -31,3 +31,7 @@ services:
     # Ordering bounded context: same explicit binding pattern.
     App\Ordering\Domain\Repository\OrderRepositoryInterface: '@App\Ordering\Infrastructure\Persistence\Doctrine\DoctrineOrderRepository'
     App\Ordering\Domain\Repository\OrderStatusHistoryRepositoryInterface: '@App\Ordering\Infrastructure\Persistence\Doctrine\DoctrineOrderStatusHistoryRepository'
+
+    # Identity bounded context: same explicit binding pattern.
+    App\Identity\Domain\Repository\UserRepositoryInterface: '@App\Identity\Infrastructure\Persistence\Doctrine\DoctrineUserRepository'
+    App\Identity\Domain\Repository\CompanyRepositoryInterface: '@App\Identity\Infrastructure\Persistence\Doctrine\DoctrineCompanyRepository'

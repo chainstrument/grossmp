@@ -8,7 +8,7 @@ use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\Service\PriceCalculator;
 use App\Catalog\Domain\ValueObject\Money;
 use App\Catalog\Domain\ValueObject\Sku;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use PHPUnit\Framework\TestCase;
 
 /**

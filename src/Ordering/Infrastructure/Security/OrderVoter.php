@@ -2,8 +2,8 @@
 
 namespace App\Ordering\Infrastructure\Security;
 
-use App\Entity\Company;
-use App\Entity\User;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Domain\Entity\Order;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;

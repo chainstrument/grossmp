@@ -3,7 +3,7 @@
 namespace App\Catalog\Domain\Entity;
 
 use App\Catalog\Domain\ValueObject\Money;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Ordering;
 
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Domain\Enum\OrderStatus;
 use PHPUnit\Framework\TestCase;

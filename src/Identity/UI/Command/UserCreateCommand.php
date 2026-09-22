@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Command;
+namespace App\Identity\UI\Command;
 
-use App\Entity\User;
-use App\Repository\CompanyRepository;
+use App\Identity\Domain\Entity\User;
+use App\Identity\Domain\Repository\CompanyRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +23,7 @@ class UserCreateCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly CompanyRepository $companyRepository,
+        private readonly CompanyRepositoryInterface $companyRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly ValidatorInterface $validator,
     ) {
@@ -69,7 +69,7 @@ class UserCreateCommand extends Command
 
         $company = null;
         if (null !== $companyId) {
-            $company = $this->companyRepository->find($companyId);
+            $company = $this->companyRepository->findById((int) $companyId);
             if (!$company) {
                 $io->error(sprintf('Aucune société trouvée avec l\'ID "%s".', $companyId));
 

@@ -2,7 +2,7 @@
 
 namespace App\Tests\Functional;
 
-use App\Entity\User;
+use App\Identity\Domain\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,7 +19,7 @@ class LoginTest extends WebTestCase
         // see EPIC 12), so make sure a leftover user from a previous run doesn't collide.
         self::bootKernel();
         self::getContainer()->get(EntityManagerInterface::class)
-            ->createQuery('DELETE FROM App\Entity\User u WHERE u.email = :email')
+            ->createQuery('DELETE FROM App\Identity\Domain\Entity\User u WHERE u.email = :email')
             ->setParameter('email', self::TEST_EMAIL)
             ->execute();
         self::ensureKernelShutdown();

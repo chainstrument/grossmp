@@ -6,9 +6,9 @@ use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\ValueObject\Money;
 use App\Catalog\Domain\ValueObject\Sku;
-use App\Entity\Company;
-use App\Entity\Embeddable\Address;
-use App\Entity\User;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\Entity\User;
+use App\Identity\Domain\ValueObject\Address;
 use App\Ordering\Application\CartManager;
 use App\Ordering\Application\OrderWorkflow;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,21 +40,21 @@ class OrderControllerTest extends WebTestCase
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
 
         foreach ([self::SIRET_A, self::SIRET_B] as $siret) {
-            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderStatusHistory h WHERE h.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Entity\Company c WHERE c.siret = :siret))')
+            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderStatusHistory h WHERE h.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret))')
                 ->setParameter('siret', $siret)->execute();
-            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderLine l WHERE l.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Entity\Company c WHERE c.siret = :siret))')
+            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\OrderLine l WHERE l.order IN (SELECT o FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret))')
                 ->setParameter('siret', $siret)->execute();
-            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Entity\Company c WHERE c.siret = :siret)')
+            $this->em->createQuery('DELETE FROM App\Ordering\Domain\Entity\Order o WHERE o.company IN (SELECT c FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret)')
                 ->setParameter('siret', $siret)->execute();
         }
         $this->em->createQuery('DELETE FROM App\Catalog\Domain\Entity\Product p WHERE p.reference = :ref')
             ->setParameter('ref', self::TEST_SKU)->execute();
         foreach ([self::BUYER_A_EMAIL, self::BUYER_B_EMAIL, self::STAFF_EMAIL] as $email) {
-            $this->em->createQuery('DELETE FROM App\Entity\User u WHERE u.email = :email')
+            $this->em->createQuery('DELETE FROM App\Identity\Domain\Entity\User u WHERE u.email = :email')
                 ->setParameter('email', $email)->execute();
         }
         foreach ([self::SIRET_A, self::SIRET_B] as $siret) {
-            $this->em->createQuery('DELETE FROM App\Entity\Company c WHERE c.siret = :siret')
+            $this->em->createQuery('DELETE FROM App\Identity\Domain\Entity\Company c WHERE c.siret = :siret')
                 ->setParameter('siret', $siret)->execute();
         }
 

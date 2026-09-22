@@ -5,7 +5,7 @@ namespace App\Catalog\Domain\Service;
 use App\Catalog\Domain\Entity\PriceTier;
 use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\ValueObject\Money;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 
 /**
  * Resolves the price-tier rules of a Product into a single effective unit price.

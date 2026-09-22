@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit\Ordering;
 
-use App\Entity\Company;
-use App\Entity\User;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Infrastructure\Security\OrderVoter;
 use PHPUnit\Framework\Attributes\DataProvider;

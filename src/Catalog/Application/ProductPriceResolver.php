@@ -6,7 +6,7 @@ use App\Catalog\Domain\Exception\ProductNotFoundException;
 use App\Catalog\Domain\Repository\ProductRepositoryInterface;
 use App\Catalog\Domain\Service\PriceCalculatorInterface;
 use App\Catalog\Domain\ValueObject\Money;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 
 /**
  * Application service for use case #16: the effective unit price of a

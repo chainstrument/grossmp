@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Entity;
+namespace App\Identity\Domain\Entity;
 
-use App\Entity\Embeddable\Address;
-use App\Repository\CompanyRepository;
+use App\Identity\Domain\ValueObject\Address;
+use App\Identity\Infrastructure\Persistence\Doctrine\DoctrineCompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[ORM\Entity(repositoryClass: DoctrineCompanyRepository::class)]
+#[ORM\Table(name: 'company')]
 class Company
 {
     #[ORM\Id]

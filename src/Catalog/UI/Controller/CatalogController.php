@@ -6,7 +6,7 @@ use App\Catalog\Application\ProductCatalogFinder;
 use App\Catalog\Application\ProductPriceResolver;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\Repository\ProductSearchCriteria;
-use App\Repository\CompanyRepository;
+use App\Identity\Domain\Repository\CompanyRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class CatalogController extends AbstractController
     public function __construct(
         private readonly ProductCatalogFinder $catalogFinder,
         private readonly ProductPriceResolver $priceResolver,
-        private readonly CompanyRepository $companies,
+        private readonly CompanyRepositoryInterface $companies,
     ) {
     }
 
@@ -35,7 +35,7 @@ class CatalogController extends AbstractController
         $category = ProductCategory::tryFrom((string) $request->query->get('category', ''));
         $page = max(1, $request->query->getInt('page', 1));
         $companyId = $request->query->get('company');
-        $company = $companyId ? $this->companies->find($companyId) : null;
+        $company = $companyId ? $this->companies->findById((int) $companyId) : null;
 
         $catalogPage = $this->catalogFinder->search(ProductSearchCriteria::create(
             searchTerm: $searchTerm,

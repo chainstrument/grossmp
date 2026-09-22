@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Identity\UI\Controller;
 
-use App\Entity\User;
-use App\Form\UserAccountType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Identity\Application\AccountEditor;
+use App\Identity\Domain\Entity\User;
+use App\Identity\UI\Form\UserAccountType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AccountController extends AbstractController
 {
     #[Route('', name: '', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, AccountEditor $accountEditor): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -25,7 +25,7 @@ class AccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $accountEditor->save($user);
 
             $this->addFlash('success', 'Vos informations ont été mises à jour.');
 

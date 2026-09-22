@@ -2,7 +2,7 @@
 
 namespace App\Ordering\UI\Controller;
 
-use App\Entity\User;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Application\OrderWorkflow;
 use App\Ordering\Domain\Repository\OrderRepositoryInterface;
 use App\Ordering\Domain\Repository\OrderStatusHistoryRepositoryInterface;

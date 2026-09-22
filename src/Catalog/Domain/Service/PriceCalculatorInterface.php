@@ -4,7 +4,7 @@ namespace App\Catalog\Domain\Service;
 
 use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\ValueObject\Money;
-use App\Entity\Company;
+use App\Identity\Domain\Entity\Company;
 
 interface PriceCalculatorInterface
 {

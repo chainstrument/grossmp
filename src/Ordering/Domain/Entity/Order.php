@@ -4,8 +4,8 @@ namespace App\Ordering\Domain\Entity;
 
 use App\Catalog\Domain\Entity\Product;
 use App\Catalog\Domain\ValueObject\Money;
-use App\Entity\Company;
-use App\Entity\User;
+use App\Identity\Domain\Entity\Company;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Domain\Enum\OrderStatus;
 use App\Ordering\Domain\Exception\CartNotEditableException;
 use App\Ordering\Infrastructure\Persistence\Doctrine\DoctrineOrderRepository;

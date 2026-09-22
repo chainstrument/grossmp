@@ -2,7 +2,7 @@
 
 namespace App\Ordering\Infrastructure\Workflow;
 
-use App\Entity\User;
+use App\Identity\Domain\Entity\User;
 use App\Ordering\Domain\Entity\Order;
 use App\Ordering\Domain\Entity\OrderStatusHistory;
 use App\Ordering\Domain\Enum\OrderStatus;
