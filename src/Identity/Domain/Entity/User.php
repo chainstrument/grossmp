@@ -2,6 +2,8 @@
 
 namespace App\Identity\Domain\Entity;
 
+use App\Identity\Domain\Validator\CompanyRequiredForRole;
+use App\Identity\Domain\ValueObject\Email;
 use App\Identity\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -11,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: DoctrineUserRepository::class)]
 #[ORM\Table(name: 'app_user')] // "user" is a reserved word on most SQL engines
 #[ORM\UniqueConstraint(name: 'UNIQ_USER_EMAIL', fields: ['email'])]
+#[CompanyRequiredForRole]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_BUYER = 'ROLE_BUYER';
@@ -69,7 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
+        $this->email = (new Email($email))->value();
 
         return $this;
     }
@@ -127,6 +130,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
+        foreach ($roles as $role) {
+            if (!in_array($role, self::AVAILABLE_ROLES, true)) {
+                throw new \InvalidArgumentException(sprintf('Invalid role "%s". Available roles: %s.', $role, implode(', ', self::AVAILABLE_ROLES)));
+            }
+        }
+
         $this->roles = $roles;
 
         return $this;
