@@ -6,7 +6,7 @@ use App\Catalog\Application\ProductCatalogFinder;
 use App\Catalog\Application\ProductPriceResolver;
 use App\Catalog\Domain\Enum\ProductCategory;
 use App\Catalog\Domain\Repository\ProductSearchCriteria;
-use App\Identity\Domain\Repository\CompanyRepositoryInterface;
+use App\Identity\Application\CompanyFinder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class CatalogController extends AbstractController
     public function __construct(
         private readonly ProductCatalogFinder $catalogFinder,
         private readonly ProductPriceResolver $priceResolver,
-        private readonly CompanyRepositoryInterface $companies,
+        private readonly CompanyFinder $companies,
     ) {
     }
 

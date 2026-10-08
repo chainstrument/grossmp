@@ -3,9 +3,8 @@
 namespace App\Ordering\UI\Controller;
 
 use App\Identity\Domain\Entity\User;
+use App\Ordering\Application\OrderFinder;
 use App\Ordering\Application\OrderWorkflow;
-use App\Ordering\Domain\Repository\OrderRepositoryInterface;
-use App\Ordering\Domain\Repository\OrderStatusHistoryRepositoryInterface;
 use App\Ordering\Infrastructure\Security\OrderVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,8 +20,7 @@ use Symfony\Component\Workflow\Exception\LogicException as WorkflowLogicExceptio
 class OrderController extends AbstractController
 {
     public function __construct(
-        private readonly OrderRepositoryInterface $orders,
-        private readonly OrderStatusHistoryRepositoryInterface $history,
+        private readonly OrderFinder $orders,
         private readonly OrderWorkflow $orderWorkflow,
     ) {
     }
@@ -61,7 +59,7 @@ class OrderController extends AbstractController
 
         return $this->render('order/show.html.twig', [
             'order' => $order,
-            'history' => $this->history->findByOrder($order),
+            'history' => $this->orders->findHistory($order),
             'enabledTransitions' => $enabledTransitions,
         ]);
     }
