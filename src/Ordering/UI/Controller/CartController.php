@@ -52,6 +52,8 @@ class CartController extends AbstractController
                 $form->get('quantity')->addError(new FormError($e->getMessage()));
             } catch (ProductNotFoundException) {
                 $form->get('product')->addError(new FormError('Produit introuvable.'));
+            } catch (\InvalidArgumentException $e) {
+                $form->get('quantity')->addError(new FormError($e->getMessage()));
             }
         }
 

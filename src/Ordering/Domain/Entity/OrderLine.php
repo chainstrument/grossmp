@@ -81,6 +81,10 @@ class OrderLine
             throw new \InvalidArgumentException('Order line quantity must be at least 1.');
         }
 
+        if ($quantity >= 500) {
+            throw new \InvalidArgumentException('Order line quantity must be less than 500.');
+        }
+
         $this->quantity = $quantity;
     }
 
